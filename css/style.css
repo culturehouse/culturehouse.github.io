@@ -268,6 +268,11 @@ a:hover, a:focus, a:active {
   padding-left: 15px;
 }
 
+.probootstrap-navbar .navbar-brand img {
+  height: 70px;
+  display: inline-block;
+}
+
 .probootstrap-navbar .navbar-brand:hover {
   color: #ffffff;
 }
@@ -277,6 +282,9 @@ a:hover, a:focus, a:active {
     color: #000000;
     line-height: 0;
     padding-left: 0px;
+  }
+  .probootstrap-navbar .navbar-brand img {
+  height: 100%;
   }
 }
 
