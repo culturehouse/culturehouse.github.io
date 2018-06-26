@@ -1,126 +1,80 @@
-/* Needed gulp config */
-
-var gulp = require('gulp');  
+var gulp = require('gulp');
 var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var notify = require('gulp-notify');
-var minifycss = require('gulp-minify-css');
-var concat = require('gulp-concat');
-var plumber = require('gulp-plumber');
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
-const sourcemaps = require('gulp-sourcemaps');
-const autoprefixer = require('gulp-autoprefixer');
+var header = require('gulp-header');
+var cleanCSS = require('gulp-clean-css');
+var rename = require("gulp-rename");
+var pkg = require('./package.json');
+var browserSync = require('browser-sync').create();
 
-/* Setup scss path */
-var paths = {
-    scss: './sass/*.scss'
-};
+// Set the banner content
+var banner = ['/*!\n',
+  ' * Start Bootstrap - <%= pkg.title %> v<%= pkg.version %> (<%= pkg.homepage %>)\n',
+  ' * Copyright 2013-' + (new Date()).getFullYear(), ' <%= pkg.author %>\n',
+  ' * Licensed under <%= pkg.license %> (https://github.com/BlackrockDigital/<%= pkg.name %>/blob/master/LICENSE)\n',
+  ' */\n',
+  ''
+].join('');
 
-/* Scripts task */
-gulp.task('scripts', function() {
-  return gulp.src([
-    /* Add your JS files here, they will be combined in this order */
-    'js/vendor/jquery.min.js',
-    'js/vendor/jquery.easing.1.3.js',
-    'js/vendor/jquery.stellar.min.js',
-    'js/vendor/bootstrap.min.js',
-    'js/vendor/jquery.waypoints.min.js',
-    'js/vendor/jquery.magnific-popup.min.js',
+// Copy third party libraries from /node_modules into /vendor
+gulp.task('vendor', function() {
+
+  // Bootstrap
+  gulp.src([
+      './node_modules/bootstrap/dist/**/*',
+      '!./node_modules/bootstrap/dist/css/bootstrap-grid*',
+      '!./node_modules/bootstrap/dist/css/bootstrap-reboot*'
     ])
-    .pipe(concat('scripts.js'))
-    .pipe(gulp.dest('js'))
-    .pipe(rename({suffix: '.min'}))
-    .pipe(uglify())
-    .pipe(gulp.dest('js'));
-});
+    .pipe(gulp.dest('./vendor/bootstrap'))
 
-gulp.task('minify-custom', function() {
-  return gulp.src([
-    /* Add your JS files here, they will be combined in this order */
-    'js/custom.js'
+  // jQuery
+  gulp.src([
+      './node_modules/jquery/dist/*',
+      '!./node_modules/jquery/dist/core.js'
     ])
-    .pipe(rename({suffix: '.min'}))
-    .pipe(uglify())
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('./vendor/jquery'))
+
 });
 
-/* Sass task */
-gulp.task('sass', function () {  
-    gulp.src('scss/style.scss')
-    .pipe(plumber())
-    .pipe(sass({
-      errLogToConsole: true,
+// Compile SCSS
+gulp.task('css:compile', function() {
+  return gulp.src('./scss/**/*.scss')
+    .pipe(sass.sync({
+      outputStyle: 'expanded'
+    }).on('error', sass.logError))
+    .pipe(gulp.dest('./css'))
+});
 
-      //outputStyle: 'compressed',
-      // outputStyle: 'compact',
-      // outputStyle: 'nested',
-      outputStyle: 'expanded',
-      precision: 10
+// Minify CSS
+gulp.task('css:minify', ['css:compile'], function() {
+  return gulp.src([
+      './css/*.css',
+      '!./css/*.min.css'
+    ])
+    .pipe(cleanCSS())
+    .pipe(rename({
+      suffix: '.min'
     }))
-
-    .pipe(sourcemaps.init())
-    .pipe(autoprefixer({
-        browsers: ['last 2 versions'],
-        cascade: false
-    }))
-    .pipe(gulp.dest('css'))
-
-    .pipe(rename({suffix: '.min'}))
-    .pipe(minifycss())
-    .pipe(gulp.dest('css'))
-    /* Reload the browser CSS after every change */
-    .pipe(reload({stream:true}));
+    .pipe(gulp.dest('./css'))
+    .pipe(browserSync.stream());
 });
 
-gulp.task('merge-styles', function () {
+// CSS
+gulp.task('css', ['css:compile', 'css:minify']);
 
-    return gulp.src([
-        'css/vendor/bootstrap.min.css',
-        'css/vendor/animate.css',
-        'css/vendor/magnific-popup.css',
-        'fonts/icomoon/style.css',
-        ])
-        // .pipe(sourcemaps.init())
-        // .pipe(autoprefixer({
-        //     browsers: ['last 2 versions'],
-        //     cascade: false
-        // }))
-        .pipe(concat('styles-merged.css'))
-        .pipe(gulp.dest('css'))
-        // .pipe(rename({suffix: '.min'}))
-        // .pipe(minifycss())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('css'))
-        .pipe(reload({stream:true}));
+// Default task
+gulp.task('default', ['css', 'vendor']);
+
+// Configure the browserSync task
+gulp.task('browserSync', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./"
+    }
+  });
 });
 
-/* Reload task */
-gulp.task('bs-reload', function () {
-    browserSync.reload();
-});
-
-/* Prepare Browser-sync for localhost */
-gulp.task('browser-sync', function() {
-    browserSync.init(['css/*.css', 'js/*.js'], {
-        
-        proxy: 'localhost/probootstrap/frame'
-        /* For a static server you would use this: */
-        /*
-        server: {
-            baseDir: './'
-        }
-        */
-    });
-});
-
-/* Watch scss, js and html files, doing different things with each. */
-gulp.task('default', ['sass', 'scripts', 'browser-sync'], function () {
-    /* Watch scss, run the sass task on change. */
-    gulp.watch(['scss/*.scss', 'scss/**/*.scss'], ['sass'])
-    /* Watch app.js file, run the scripts task on change. */
-    gulp.watch(['js/custom.js'], ['minify-custom'])
-    /* Watch .html files, run the bs-reload task on change. */
-    gulp.watch(['*.html'], ['bs-reload']);
+// Dev task
+gulp.task('dev', ['css', 'browserSync'], function() {
+  gulp.watch('./scss/*.scss', ['css']);
+  gulp.watch('./*.html', browserSync.reload);
 });
