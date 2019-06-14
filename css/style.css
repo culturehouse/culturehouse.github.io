@@ -13,7 +13,7 @@ h6 {
 }
 
 h1 {
-  color: #FED714;
+  color: #ffffff;
 }
 
 h1,
@@ -83,23 +83,26 @@ a:hover {
 }
 
 header.masthead {
-  position: relative;
-  overflow: hidden;
-  padding-top: calc(7rem + 72px);
-  padding-bottom: 7rem;
+  height: 100vh; 
+  background-position: center;
   background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: scroll;
-  background-size: cover;*/
+  background-size: cover;
+  display: flex;
+  padding-top: 4.8125rem;
 }
+
 
 header.masthead .masthead-content {
   z-index: 1;
-  position: relative;
+/*  position: relative;*/
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 
 header.masthead .masthead-content .masthead-heading {
-  font-size: 4rem;
+  font-size: 2rem;
 }
 
 header.masthead .masthead-content .masthead-subheading {
@@ -108,11 +111,11 @@ header.masthead .masthead-content .masthead-subheading {
 
 @media (min-width: 992px) {
   header.masthead {
-    padding-top: calc(10rem + 55px);
-    padding-bottom: 10rem;
+/*    padding-top: 25vh;
+    padding-bottom: 25vh;*/
   }
   header.masthead .masthead-content .masthead-heading {
-    font-size: 6rem;
+    font-size: 4rem;
   }
   header.masthead .masthead-content .masthead-subheading {
     font-size: 4rem;
@@ -162,6 +165,21 @@ header.masthead .masthead-content .masthead-subheading {
 
 .title-spacing {
   padding: 3rem 0rem 3rem 0rem;
+}
+
+.img {
+  padding-bottom: 1rem;
+  width: 100%;
+}
+
+.img-fit-sm {
+  height: 12rem;
+  object-fit: cover;
+}
+
+.img-fit-lg {
+  height: 20rem;
+  object-fit: cover;
 }
 
 .img-about {
