@@ -201,6 +201,10 @@ header.masthead .masthead-content .masthead-subheading {
   padding-right: 1rem;
 }
 
+.img-sponsor {
+  width: 50%;
+}
+
 @media (min-width: 768px) {
   .fb-embed-md, .fb-embed-sm {
     height: 0px;
