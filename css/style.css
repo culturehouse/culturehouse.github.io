@@ -91,23 +91,6 @@ a:hover {
   letter-spacing: 0.1rem;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Dropdown Button */
 .dropbtn {
   color: rgba(0, 0, 0. .5);
@@ -130,8 +113,8 @@ a:hover {
     display: none;
     position: absolute;
     background-color: #ffffff;
-    padding-top: .37rem;
-    padding-bottom: .37rem;
+    padding-top: .125rem;
+    padding-bottom: .125rem;
     min-width: 110px;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
     z-index: 1;
@@ -146,7 +129,6 @@ a:hover {
     display: block;
   }
 }
-
 
 @media (max-width: 992px) {
   .dropdown-content {
@@ -165,29 +147,8 @@ a:hover {
   }
 }
 
-/* Change color of dropdown links on hover */
-/*.dropdown-content a:hover {background-color: #ddd;}*/
-
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-/*.dropdown:hover .dropbtn {background-color: #f1f1f1;}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .active {
   color: #231F20;
